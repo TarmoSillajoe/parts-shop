@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    cross-refs
+{% endblock title %}
+{% block content %}
+    <h1 class="text-lg">Koodi "{{ code }}" järgi leitud vasted:</h1>
+    <div class="p-8">
+        <table id="crossrefs-table" class="table-auto border">
+            <thead>
+                <tr class="font bold p-2 text-left">
+                    <th>bao</th>
+                    <th>bränd</th>
+                    <th>tehasekood</th>
+                    <th>müüja toode</th>
+                    <th>müüja</th>
+                    <th>hind €</th>
+                    <th>min_tk</th>
+                    <th>muutmisaeg</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                    <tr class="merchant-row border-l border-gray-500 {{ current_color }}">
+                        <td>
+                            {% if result.bao %}{{ result.bao }}{% endif %}
+                        </td>
+                        <td class="px-4">{{ result.brand }}</td>
+                        <td class="manufacturer-code px-4">{{ result.code }}</td>
+                        <td class="px-4">{{ result.merchants_code }}</td>
+                        <td class="px-4">{{ result.merchant }}</td>
+                        <td class="px-4">
+                            {% if result.price %}{{ result.price }}{% endif %}
+                        </td>
+                        <td class="px-4">{{ result.min_order }}</td>
+                        <td class="px-4">{{ result.modified_at }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

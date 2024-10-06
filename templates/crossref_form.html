@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}
+    query cross-refs
+{% endblock title %}
+{% block content %}
+    <form action="{% url 'cross_refs' %}" method="GET">
+        {{ form }}
+        <button type="submit">submit</button>
+    </form>
+{% endblock content %}
