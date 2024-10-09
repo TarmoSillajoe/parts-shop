@@ -1,52 +1,60 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-    query cross-refs
+  query cross-refs
 {% endblock title %}
 {% block content %}
-    <div class="w-full max-w-xs">
-        <form action="{% url 'cross_refs' %}"
-              method="GET"
-              class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            {{ form }}
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="submit">submit</button>
-        </form>
+  <div class="w-full max-w-xs">
+    <form action="{% url 'applesauce' %}"
+          method="GET"
+          class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      {{ form.non_field_errors }}
+      <div class="mb-4">
+        {{ form.code.errors }}
+        <label class="block text-gray-700 text-sm font-bold mb-2"
+               for="{{ form.code.id_for_label }}">code</label>
+        {{ form.code }}
+        <input>
+      </input>
     </div>
-    {% if results %}
-        <div class="p-8">
-            <table id="crossrefs-table" class="table-auto border">
-                <thead>
-                    <tr class="font bold p-2 text-left">
-                        <th>bao</th>
-                        <th>bränd</th>
-                        <th>tehasekood</th>
-                        <th>müüja toode</th>
-                        <th>müüja</th>
-                        <th>hind €</th>
-                        <th>min_tk</th>
-                        <th>muutmisaeg</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for result in results %}
-                        <tr class="merchant-row border-l border-gray-500 {{ current_color }}">
-                            <td>
-                                {% if result.bao %}{{ result.bao }}{% endif %}
-                            </td>
-                            <td class="px-4">{{ result.brand }}</td>
-                            <td class="manufacturer-code px-4">{{ result.code }}</td>
-                            <td class="px-4">{{ result.merchants_code }}</td>
-                            <td class="px-4">{{ result.merchant }}</td>
-                            <td class="px-4">
-                                {% if result.price %}{{ result.price }}{% endif %}
-                            </td>
-                            <td class="px-4">{{ result.min_order }}</td>
-                            <td class="px-4">{{ result.modified_at }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit">submit</button>
+  </form>
+</div>
+{% if results %}
+  <div class="p-8">
+    <table id="crossrefs-table" class="table-auto border">
+      <thead>
+        <tr class="font bold p-2 text-left">
+          <th>bao</th>
+          <th>bränd</th>
+          <th>tehasekood</th>
+          <th>müüja toode</th>
+          <th>müüja</th>
+          <th>hind €</th>
+          <th>min_tk</th>
+          <th>muutmisaeg</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+          <tr class="merchant-row border-l border-gray-500 {{ current_color }}">
+            <td>
+              {% if result.bao %}{{ result.bao }}{% endif %}
+            </td>
+            <td class="px-4">{{ result.brand }}</td>
+            <td class="manufacturer-code px-4">{{ result.code }}</td>
+            <td class="px-4">{{ result.merchants_code }}</td>
+            <td class="px-4">{{ result.merchant }}</td>
+            <td class="px-4">
+              {% if result.price %}{{ result.price }}{% endif %}
+            </td>
+            <td class="px-4">{{ result.min_order }}</td>
+            <td class="px-4">{{ result.modified_at }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
 {% endblock content %}

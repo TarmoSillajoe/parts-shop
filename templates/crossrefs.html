@@ -5,6 +5,7 @@
 {% endblock title %}
 {% block content %}
     <h1 class="text-lg">Koodi "{{ code }}" järgi leitud vasted:</h1>
+    <a href="{% url 'applesauce' %}"class="text-lg text-blue-500">uuesti otsima</a>
     <div class="p-8">
         <table id="crossrefs-table" class="table-auto border">
             <thead>
@@ -21,7 +22,7 @@
             </thead>
             <tbody>
                 {% for result in results %}
-                    <tr class="merchant-row border-l border-gray-500 {{ current_color }}">
+                    <tr class="merchant-row border-l border-gray-600 {{ current_color }}">
                         <td>
                             {% if result.bao %}{{ result.bao }}{% endif %}
                         </td>

@@ -75,13 +75,17 @@ order by brand limit 30;
 
 
 def applesauce(request):
-    form = CrossRefForm(request.GET)
     results = []
-    if form.is_valid():
-        code = form.cleaned_data["code"]
-        with db.connection.cursor() as cursor:
-            cursor.execute(
-                """
+    form = CrossRefForm()
+    context = {"form": form}
+
+    if "code" in request.GET:
+        form = CrossRefForm(request.GET)
+        if form.is_valid():
+            code: str = form.cleaned_data["code"]
+            with db.connection.cursor() as cursor:
+                cursor.execute(
+                    """
                 with q(code) as (
                     values (%s)
                 ),
@@ -110,11 +114,11 @@ def applesauce(request):
                     join merchant on mi.merchant_id = merchant.id
                     left join bao using(item_id)
                 where modified_at > '2023-06-01' and mi.merchant_id not in (1)
-                order by brand limit 30;
+                order by brand, bao;
                        """,
-                [code],
-            )
-        results = dict_fetchall(cursor)
-    return shortcuts.render(
-        request, "crossref_form.html", {"form": form, "results": results}
-    )
+                    [code],
+                )
+                results = dict_fetchall(cursor)
+                if results:
+                    context.update({"results": results})
+    return shortcuts.render(request, "applesauce.html", context)
