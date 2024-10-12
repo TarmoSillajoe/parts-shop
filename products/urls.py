@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
     path("", views.applesauce, name="applesauce"),
-    path("cross/", views.cross_refs, name="cross_refs"),
+    path("code-search-results", views.code_search_results, name="code-search-results"),
     path("merchants/", views.merchants, name="merchants"),
-    path("query/", views.code_query_form, name="code_query_form"),
 ]

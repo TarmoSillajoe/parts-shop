@@ -1,12 +1,23 @@
 from django import shortcuts
-from .models import Merchant
+from .models import Merchant, Item
 from django import db
 from django import http
 from .forms import CrossRefForm
+from django.core import serializers
 
 
-def home(request):
-    return shortcuts.render(request, template_name="home.html", context={})
+def code_search_results(request):
+    code_fragment: str = request.GET.get("code")
+    if code_fragment:
+        result = Item.objects.filter(
+            base_item__isnull=False,
+            code__icontains=code_fragment,
+        )[:15].values()
+        return shortcuts.render(
+            request,
+            template_name="codes-found.html",
+            context={"items_found": result},
+        )
 
 
 def merchants(request):
@@ -16,67 +27,14 @@ def merchants(request):
     )
 
 
-def code_query_form(request):
-    form = CrossRefForm(request.GET)
-    if form.is_valid():
-        code = form.cleaned_data["code"]
-        return shortcuts.redirect(shortcuts.reverse("cross_refs") + f"?code={code}")
-    return shortcuts.render(request, "crossref_form.html", {"form": form})
-
-
 def dict_fetchall(cursor):
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
-def cross_refs(request):
-    code = request.GET["code"]
-    with db.connection.cursor() as cursor:
-        cursor.execute(
-            """
-with q(code) as (
-    values (%s)
-),
-bao as (
-    select item_id,
-        code as bao
-    from merchant_item
-    where merchant_id = 1
-    union
-    select item_id, code as bao
-    from merchant_item
-    where merchant_id = 2
-)
-select bao, bitem.code,
-    manufacturer.name as brand,
-    mi.code as merchants_code,
-    round(mi.purchase_price, 2) as price,
-    mi.min_order,
-    merchant.name as merchant,
-    mi.modified_at
-from q
-    join item using(code)
-    join item bitem using(base_item_id)
-    join manufacturer on bitem.manufacturer_id = manufacturer.id
-    join merchant_item mi on bitem.id = mi.item_id
-    join merchant on mi.merchant_id = merchant.id
-    left join bao using(item_id)
-where modified_at > '2023-06-01' and mi.merchant_id not in (1)
-order by brand limit 30;
-                       """,
-            [code],
-        )
-        results = dict_fetchall(cursor)
-    return shortcuts.render(
-        request,
-        template_name="crossrefs.html",
-        context={"results": results, "code": code},
-    )
-
-
 def applesauce(request):
     results = []
-    form = CrossRefForm()
+    form: CrossRefForm = CrossRefForm()
     context = {"form": form}
 
     if "code" in request.GET:
@@ -91,11 +49,11 @@ def applesauce(request):
                 ),
                 bao as (
                     select item_id,
-                        code as bao
+                        code as bao, description
                     from merchant_item
                     where merchant_id = 1
                     union
-                    select item_id, code as bao
+                    select item_id, code as bao, description
                     from merchant_item
                     where merchant_id = 2
                 )
@@ -105,7 +63,7 @@ def applesauce(request):
                     round(mi.purchase_price, 2) as price,
                     mi.min_order,
                     merchant.name as merchant,
-                    mi.modified_at
+                    mi.modified_at, bao.description
                 from q
                     join item using(code)
                     join item bitem using(base_item_id)
@@ -121,4 +79,5 @@ def applesauce(request):
                 results = dict_fetchall(cursor)
                 if results:
                     context.update({"results": results})
+            context.update({"form": CrossRefForm(form.cleaned_data)})
     return shortcuts.render(request, "applesauce.html", context)

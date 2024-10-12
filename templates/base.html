@@ -4,16 +4,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      {% block title %}
-      {% endblock title %}
-    </title>
-    <style>.color-code {background-color: rgb(181, 173, 187);}</style>
-    <link href="{% static 'dist/styles.css' %}" rel="stylesheet">
+    <title>{% block title %} {% endblock title %}</title>
+    <style>
+      .color-code {
+        background-color: rgb(181, 173, 187);
+      }
+      #codes-found {
+        width: 200px;
+        height: 200px;
+        overflow: auto;
+        padding: 10px;
+      }
+      #codes-found li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+      }
+      #codes-found li:hover {
+        background-color: rgba(88, 111, 212, 0.933);
+      }
+    </style>
+    <link href="{% static 'dist/styles.css' %}" rel="stylesheet" />
   </head>
-  <body class="body">
-    {% block content %}
-    {% endblock content %}
-    <script src="{% static 'src/script.js'%}" defer></script>
+  <body class="body bg-stone-300">
+    {% block content %} {% endblock content %}
+    <script src="{% static 'src/htmx.min.js' %}" defer></script>
+    <script src="{% static 'src/script.js' %}" defer></script>
   </body>
 </html>
