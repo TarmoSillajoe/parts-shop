@@ -8,10 +8,10 @@ from django.core import serializers
 
 def code_search_results(request):
     code_fragment: str = request.GET.get("code")
-    if code_fragment:
+    if code_fragment and len(code_fragment) > 2:
         result = Item.objects.filter(
             base_item__isnull=False,
-            code__icontains=code_fragment,
+            code__istartswith=code_fragment,
         )[:15].values()
         return shortcuts.render(
             request,

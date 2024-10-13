@@ -1,3 +1,12 @@
+{% load static %}
 <ul>
-    {% for item in items_found %}<li style="list-style: none;">{{ item.code }}</li>{% endfor %}
+    {% for item in items_found %}
+        <li class="codeInFilter"
+            style="list-style: none"
+            tabindex="0"
+            hx-trigger="click"
+            hx-target="body"
+            hx-swap="innerHTML"
+            hx-get="{% url 'applesauce' %}?code={{ item.code }}">{{ item.code }}</li>
+    {% endfor %}
 </ul>

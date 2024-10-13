@@ -18,6 +18,7 @@ class Manufacturer(models.Model):
 
     class Meta:
         db_table = "manufacturer"
+        ordering = ["name"]
 
 
 class Merchant(models.Model):
@@ -26,6 +27,7 @@ class Merchant(models.Model):
 
     class Meta:
         db_table = "merchant"
+        ordering = ["name"]
 
 
 class Props(models.Model):
@@ -80,6 +82,7 @@ class Item(models.Model):
             ("code", "manufacturer"),
             ("code", "manufacturer"),
         )
+        ordering = ["code"]
 
 
 class Ean(models.Model):

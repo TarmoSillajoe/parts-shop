@@ -12,7 +12,7 @@ class CrossRefForm(forms.Form):
                 "hx-get": "code-search-results",
                 "hx-target": "#codes-found",
                 "hx-include": "#id_code",
-                "hx-trigger": "input changed delay:500ms, search from:body",
+                "hx-trigger": "input changed delay:700ms, search from:body",
             }
         ),
     )
