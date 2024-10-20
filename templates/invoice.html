@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    invoice
+{% endblock title %}
+{% block content %}
+    <form method="get" action={% url 'invoice' %} autocomplete="off">
+        {{ merchant_form.name }}
+        <div id="merchants-found"></div>
+    </form>
+    {% if upload_form %}
+        <form action="post" enctype='multipart/form-data'>
+            {% csrf_token %}
+            {{ upload_form }}
+        </form>
+    {% endif %}
+{% endblock content %}

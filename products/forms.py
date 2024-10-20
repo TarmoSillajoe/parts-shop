@@ -1,4 +1,25 @@
 from django import forms
+from django.urls import reverse_lazy
+
+
+class UploadInvoiceForm(forms.Form):
+    file = forms.FileField()
+
+
+class MerchantSearchForm(forms.Form):
+    name = forms.CharField(
+        label="firma nimi",
+        max_length=100,
+        widget=forms.TextInput(
+            {
+                "class": "form-input mt-1 block w-full rounded-md border border-gray-900",
+                "placeholder": "firma",
+                "hx-get": reverse_lazy("merchants-found"),
+                "hx-target": "#merchants-found",
+                "hx-trigger": "input changed delay:500ms, search from:body",
+            }
+        ),
+    )
 
 
 class CrossRefForm(forms.Form):

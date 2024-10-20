@@ -1,9 +1,24 @@
-select mi.code,
-    mi.description,
-    item.code as itemcode,
-    item.base_item_id
+select count(*) as n,
+    merchant.name
 from merchant_item mi
-    join item on mi.item_id = item.id
-where mi.merchant_id in ((select id from merchant where name ilike '%k%s%tools%'))
-order by mi.id desc
-limit 50;
+    join merchant on mi.merchant_id = merchant.id
+group by merchant.name
+order by n desc;
+-----------
+-----------
+select count(*) as n,
+    manufacturer.name
+from item
+    join manufacturer on item.manufacturer_id = manufacturer.id
+group by manufacturer.name
+order by n desc;
+---------------
+select code,ean,
+    purchase_price,
+    description,
+    to_char(modified_at, 'YYYY-mm')
+from merchant_item
+join ean using(item_id)
+where merchant_id = 32
+order by merchant_item.id asc
+limit 15 offset 20;

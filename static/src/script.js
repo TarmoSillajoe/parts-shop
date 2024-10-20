@@ -19,3 +19,11 @@ function colorCodeGroups() {
   }
 }
 colorCodeGroups();
+
+document.querySelectorAll("input").forEach((input) => {
+  input.addEventListener("keydown", function (event) {
+    if (document.querySelector(".codeInFilter") && event.key === "Enter") {
+      event.stopPropagation(); // Prevents the event from bubbling up to the div
+    }
+  });
+});

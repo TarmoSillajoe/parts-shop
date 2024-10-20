@@ -1,0 +1,9 @@
+{% for merchant in merchants_found %}
+    <div class="merchant-found"
+         tabindex="0"
+         hx-trigger="click, keyup[key=='Enter'] from:body"
+         hx-target="body"
+         hx-swap="innerHTML"
+         hx-push-url="true"
+         hx-get="{% url 'invoice' %}?merchantid={{ merchant.id }}&name={{ merchant.name }}">{{ merchant.name }}</div>
+{% endfor %}

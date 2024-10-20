@@ -3,6 +3,9 @@ from . import views
 
 urlpatterns = [
     path("", views.applesauce, name="applesauce"),
-    path("code-search-results", views.code_search_results, name="code-search-results"),
-    path("merchants/", views.merchants, name="merchants"),
+    path("code-search-results", views.code_search, name="code-search-results"),
+    path("merchants-found/", views.merchant_search, name="merchants-found"),
+    path("invoice/", views.invoice, name="invoice"),
+    path("upload-invoice/", views.upload_invoice, name="upload-invoice"),
+    path("processed-invoice/", views.processed_invoice, name="processed-invoice"),
 ]
