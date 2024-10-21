@@ -4,14 +4,19 @@
     invoice
 {% endblock title %}
 {% block content %}
-    <form method="get" action={% url 'invoice' %} autocomplete="off">
+    <form id="merchant-form"
+          method="get"
+          action="{% url 'invoice' %}"
+          autocomplete="off">
         {{ merchant_form.name }}
         <div id="merchants-found"></div>
     </form>
-    {% if upload_form %}
-        <form action="post" enctype='multipart/form-data'>
-            {% csrf_token %}
-            {{ upload_form }}
-        </form>
+    {% if merchant_id %}
+        <div hx-trigger="load, from #merchant-form once"
+             hx-get="{% url 'upload-invoice' merchantid=merchant_id %}"
+             hx-swap="outerHTML"
+             hx-target="#upload">
+            <div id="upload"></div>
+        </div>
     {% endif %}
 {% endblock content %}

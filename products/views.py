@@ -7,17 +7,39 @@ from django.core import serializers
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 from django.http import HttpResponse
+import csv
 
 
 def processed_invoice(request):
     return HttpResponse("<h1>Processed your stuff</h1>")
 
 
-def upload_invoice(request):
+def process_csv(uploaded_file):
+    result: list = []
+    decoded_file = uploaded_file.read().decode("utf-8")
+    csv_reader = csv.DictReader(
+        decoded_file.splitlines(),
+        fieldnames=["code", "qty", "price"],
+        quotechar='"',
+    )
+    for row in csv_reader:
+        result.append(row)
+    return result
+
+
+def upload_invoice(request, merchantid: int):
     if request.method == "POST":
-        uploadform: UploadInvoiceForm = UploadInvoiceForm(request.POST)
+        uploadform: UploadInvoiceForm = UploadInvoiceForm(request.POST, request.FILES)
         if uploadform.is_valid():
-            return shortcuts.redirect(reverse("processed-invoice"))
+            invoice_rows = process_csv(request.FILES["file"])
+            return shortcuts.render(
+                request,
+                "upload_invoice.html",
+                context={
+                    "invoice_rows": invoice_rows,
+                    "uploadform": uploadform,
+                },
+            )
     else:
         uploadform = UploadInvoiceForm()
         context = {"uploadform": uploadform}
@@ -31,7 +53,7 @@ def invoice(request):
     merchant_name: str = request.GET.get("name")
 
     merchant_form = MerchantSearchForm(initial={"name": merchant_name})
-    context = {"merchant_form": merchant_form}
+    context = {"merchant_form": merchant_form, "merchant_id": merchant_id}
 
     return shortcuts.render(
         request,
@@ -60,7 +82,7 @@ def code_search(request):
         ).values()
         return shortcuts.render(
             request,
-            template_name="codes-found.html",
+            template_name="codes_found.html",
             context={"items_found": result},
         )
 

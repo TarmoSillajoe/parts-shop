@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 
 
 class UploadInvoiceForm(forms.Form):
-    file = forms.FileField()
+    file = forms.FileField(label="vali csv-fail")
 
 
 class MerchantSearchForm(forms.Form):

@@ -1,4 +1,18 @@
-<form action="post" enctype="multipart/form-data">
-  {% csrf_token %} {{ uploadform }}
-  <input type="button" value="lae üles" />
-</form>
+<div id="upload">
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    hx-post="."
+    hx-swap="outerHTML"
+  >
+    {% csrf_token %} {{ uploadform }}
+    <input type="submit" value="lae üles" />
+  </form>
+  {% if invoice_rows %}
+  <div>
+    {% for row in invoice_rows %}
+    <div class="invoicerow">{{ row.code }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
