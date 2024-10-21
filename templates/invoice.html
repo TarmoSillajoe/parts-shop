@@ -14,9 +14,8 @@
     {% if merchant_id %}
         <div hx-trigger="load, from #merchant-form once"
              hx-get="{% url 'upload-invoice' merchantid=merchant_id %}"
-             hx-swap="outerHTML"
-             hx-target="#upload">
-            <div id="upload"></div>
-        </div>
+             hx-swap="innerHTML"
+             hx-target="#upload"></div>
     {% endif %}
+    <div id="upload"></div>
 {% endblock content %}

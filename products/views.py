@@ -32,17 +32,18 @@ def upload_invoice(request, merchantid: int):
         uploadform: UploadInvoiceForm = UploadInvoiceForm(request.POST, request.FILES)
         if uploadform.is_valid():
             invoice_rows = process_csv(request.FILES["file"])
+            context = {
+                "invoice_rows": invoice_rows,
+                "uploadform": uploadform,
+                "merchantid": merchantid,
+            }
             return shortcuts.render(
-                request,
-                "upload_invoice.html",
-                context={
-                    "invoice_rows": invoice_rows,
-                    "uploadform": uploadform,
-                },
+                request, template_name="upload_invoice.html", context=context
             )
+
     else:
         uploadform = UploadInvoiceForm()
-        context = {"uploadform": uploadform}
+        context = {"uploadform": uploadform, "merchantid": merchantid}
     return shortcuts.render(
         request, template_name="upload_invoice.html", context=context
     )
