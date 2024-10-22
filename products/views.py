@@ -10,12 +10,17 @@ from django.http import HttpResponse
 import csv
 
 
+def dict_fetchall(cursor) -> list[dict]:
+    columns = [col[0] for col in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
 def processed_invoice(request):
     return HttpResponse("<h1>Processed your stuff</h1>")
 
 
-def process_csv(uploaded_file):
-    result: list = []
+def process_csv(uploaded_file, merchant_id: int):
+    invoice_data: list = []
     decoded_file = uploaded_file.read().decode("utf-8")
     csv_reader = csv.DictReader(
         decoded_file.splitlines(),
@@ -23,24 +28,69 @@ def process_csv(uploaded_file):
         quotechar='"',
     )
     for row in csv_reader:
-        result.append(row)
-    return result
+        invoice_data.append(row)
+    invoice_values = ", ".join(
+        f"('{row['code']}',{row['qty']},{row['price']})" for row in invoice_data
+    )
+
+    query = f"""
+    WITH invoice(code, qty, price) AS (
+        VALUES {invoice_values}
+    ),
+    seller_item AS (
+        SELECT MIN(min_order),
+            item_id,
+            code
+        FROM merchant_item mi
+        WHERE mi.merchant_id = %s
+        GROUP BY item_id, code
+    ),
+    bao_item AS (
+        SELECT item_id,
+            code AS bao,
+            description AS bao_descr
+        FROM merchant_item bao
+        WHERE bao.merchant_id = 1
+    ),
+    koivunen_item AS (
+        SELECT item_id,
+            code AS koivunen,
+            description AS koivunen_descr
+        FROM merchant_item
+        WHERE merchant_item.merchant_id = 2
+    )
+    SELECT COALESCE(bao, koivunen) AS bao,
+        invoice.qty,
+        invoice.price,
+        invoice.code,
+        COALESCE(bao_descr, koivunen_descr) AS description
+    FROM invoice
+    LEFT JOIN seller_item USING(code)
+    LEFT JOIN bao_item USING(item_id)
+    LEFT JOIN koivunen_item USING(item_id);
+    """
+    with db.connection.cursor() as cursor:
+        cursor.execute(query, [merchant_id])
+        results = dict_fetchall(cursor)
+    return results
 
 
 def upload_invoice(request, merchantid: int):
     if request.method == "POST":
         uploadform: UploadInvoiceForm = UploadInvoiceForm(request.POST, request.FILES)
         if uploadform.is_valid():
-            invoice_rows = process_csv(request.FILES["file"])
-            context = {
-                "invoice_rows": invoice_rows,
-                "uploadform": uploadform,
-                "merchantid": merchantid,
-            }
-            return shortcuts.render(
-                request, template_name="upload_invoice.html", context=context
+            processing_results = process_csv(
+                request.FILES["file"], merchant_id=merchantid
             )
-
+            return shortcuts.render(
+                request,
+                "upload_invoice.html",
+                context={
+                    "processing_results": processing_results,
+                    "uploadform": uploadform,
+                    "merchantid": merchantid,
+                },
+            )
     else:
         uploadform = UploadInvoiceForm()
         context = {"uploadform": uploadform, "merchantid": merchantid}
@@ -86,11 +136,6 @@ def code_search(request):
             template_name="codes_found.html",
             context={"items_found": result},
         )
-
-
-def dict_fetchall(cursor):
-    columns = [col[0] for col in cursor.description]
-    return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
 def applesauce(request):
