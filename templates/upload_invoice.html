@@ -1,13 +1,38 @@
-<form method="post"
-      hx-target="#upload"
-      hx-swap="innerHTML"
-      hx-post="{% url 'upload-invoice' merchantid=merchantid %}"
-      enctype="multipart/form-data">
+<form
+  method="post"
+  hx-target="#upload"
+  hx-swap="innerHTML"
+  hx-post="{% url 'upload-invoice' merchantid=merchantid %}"
+  enctype="multipart/form-data"
+>
   {% csrf_token %} {{ uploadform }}
   <input type="submit" value="lae üles" />
 </form>
 {% if processing_results %}
-  <div>
-    <p>{{ processing_results }}</p>
-  </div>
+<table
+  class="min-w-full text-left text-sm font-light text-surface dark:text-white"
+>
+  <thead
+    class="border-b border-neutral-200 bg-white font-medium dark:border-white/10 dark:bg-body-dark"
+  >
+    <tr>
+      <th scope="col" class="px-6 py-4">bao</th>
+      <th scope="col" class="px-6 py-4">tk</th>
+      <th scope="col" class="px-6 py-4">eur_tk</th>
+      <th scope="col" class="px-6 py-4">müüja kood</th>
+      <th scope="col" class="px-6 py-4">kirjeldus</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for result in processing_results %}
+    <tr>
+      <td>{{ result.bao }}</td>
+      <td>{{ result.qty }}</td>
+      <td>{{ result.price }}</td>
+      <td>{{ result.code }}</td>
+      <td>{{ result.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endif %}
