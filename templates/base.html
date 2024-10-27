@@ -10,7 +10,7 @@
     </title>
     <style>
       .color-code {
-        background-color: rgb(181, 173, 187);
+        background-color: rgb(164, 108, 207);
       }
       #codes-found, #merchants-found {
         width: 200px;
@@ -29,9 +29,12 @@
     </style>
     <link href="{% static 'dist/styles.css' %}" rel="stylesheet" />
   </head>
-  <body class="body bg-stone-300" hx-boost="true">
-    {% block content %}
-    {% endblock content %}
+  <body class="body bg-stone-300 dark:bg-gray-800" hx-boost="true">
+    {% include "menu.html" %}
+    <div class="content mx-auto px-8 space-y-2">
+      {% block content %}
+      {% endblock content %}
+    </div>
     <script src="{% static 'src/htmx.min.js' %}" defer></script>
     <script src="{% static 'src/script.js' %}" defer></script>
   </body>

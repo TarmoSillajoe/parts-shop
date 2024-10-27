@@ -1,38 +1,43 @@
-<form
-  method="post"
-  hx-target="#upload"
-  hx-swap="innerHTML"
-  hx-post="{% url 'upload-invoice' merchantid=merchantid %}"
-  enctype="multipart/form-data"
->
-  {% csrf_token %} {{ uploadform }}
-  <input type="submit" value="lae üles" />
+<form class="dark:text-gray-50 dark:bg-gray-500"
+      method="post"
+      hx-target="#upload"
+      hx-swap="innerHTML"
+      hx-post="{% url 'upload-invoice' merchantid=merchantid %}"
+      enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ uploadform }}
+  <label for="{{ file }}" class="block">
+    <p class="text-sm">vali fail</p>
+  </label>
+  <input type="submit"
+         value="lae üles"
+         class="bg-blue-500 hover:bg-blue-700 font-bold py-4 px-2 rounded" />
 </form>
 {% if processing_results %}
-<table
-  class="min-w-full text-left text-sm font-light text-surface dark:text-white"
->
-  <thead
-    class="border-b border-neutral-200 bg-white font-medium dark:border-white/10 dark:bg-body-dark"
-  >
-    <tr>
-      <th scope="col" class="px-6 py-4">bao</th>
-      <th scope="col" class="px-6 py-4">tk</th>
-      <th scope="col" class="px-6 py-4">eur_tk</th>
-      <th scope="col" class="px-6 py-4">müüja kood</th>
-      <th scope="col" class="px-6 py-4">kirjeldus</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for result in processing_results %}
-    <tr>
-      <td>{{ result.bao }}</td>
-      <td>{{ result.qty }}</td>
-      <td>{{ result.price }}</td>
-      <td>{{ result.code }}</td>
-      <td>{{ result.description }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <table class="text-left text-sm dark:text-gray-50">
+    <thead class="border-b border-neutral-200 bg-white font-medium dark:border-white/10 dark:bg-gray-500 dark:text-gray-50">
+      <tr>
+        <th scope="col">bao</th>
+        <th scope="col">tk</th>
+        <th scope="col">eur_tk</th>
+        <th scope="col">müüja kood</th>
+        <th scope="col">kirjeldus</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in processing_results %}
+        <tr>
+          <td class="border border-gray-900 dark:border-gray-50 px-2">
+            {% if result.bao %}{{ result.bao }}{% endif %}
+          </td>
+          <td class="border border-gray-900 dark:border-gray-50 px-2">{{ result.qty }}</td>
+          <td class="text-right border border-gray-900 dark:border-gray-50 px-2">{{ result.price }}</td>
+          <td class="text-right border border-gray-900 dark:border-gray-50 px-2">{{ result.code }}</td>
+          <td class="border border-gray-900 dark:border-gray-50 px-2">
+            {% if result.description %}{{ result.description }}{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endif %}

@@ -22,12 +22,9 @@
         </form>
     </div>
     {% if results %}
-        <div>
-            <h1>{{ results.0.description }}</h1>
-        </div>
         <div class="p-8">
             <table id="crossrefs-table" class="table-auto border">
-                <thead>
+                <thead class="dark:text-gray-50">
                     <tr class="font bold p-2 text-left">
                         <th>bao</th>
                         <th>bränd</th>
@@ -41,7 +38,7 @@
                 </thead>
                 <tbody>
                     {% for result in results %}
-                        <tr class="merchant-row border-l border-gray-500 {{ current_color }}">
+                        <tr class="merchant-row border-l border-gray-500 dark:text-gray-50">
                             <td>
                                 {% if result.bao %}{{ result.bao }}{% endif %}
                             </td>

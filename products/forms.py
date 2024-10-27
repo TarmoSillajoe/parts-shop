@@ -3,7 +3,9 @@ from django.urls import reverse_lazy
 
 
 class UploadInvoiceForm(forms.Form):
-    file = forms.FileField(label="vali csv-fail")
+    file = forms.FileField(
+        widget=forms.FileInput({"class": "dark:text-gray-50"}),
+    )
 
 
 class MerchantSearchForm(forms.Form):
@@ -12,7 +14,7 @@ class MerchantSearchForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(
             {
-                "class": "form-input mt-1 block w-full rounded-md border border-gray-900",
+                "class": "form-input mt-1 block w-full rounded-md border border-gray-900 dark:bg-gray-500 dark:text-gray-50",
                 "placeholder": "firma",
                 "hx-get": reverse_lazy("merchants-found"),
                 "hx-target": "#merchants-found",
