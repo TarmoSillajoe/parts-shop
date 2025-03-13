@@ -3,6 +3,7 @@ import xml.etree
 import xml.etree.ElementTree as ET
 import rich
 from pathlib import Path
+import csv
 
 
 def str_to_float(price: str) -> float:
@@ -32,7 +33,7 @@ def price_for(invoice_row: ET.Element):
 if __name__ == "__main__":
     result = []
     # filepath = Path(__file__).parent / "tests" / "data" / "autos_invoice.xml"
-    filepath = "/mnt/c/users/tarmos/koik/FUEX_8121_CN_2024.xml"
+    filepath = "/mnt/c/users/tarmos/koik/FUEX_1990_CN_2025.xml"
     for row in get_invoice_rows(filepath):
         result.append(
             {
@@ -43,3 +44,10 @@ if __name__ == "__main__":
         )
 
     rich.print(result)
+    with open("autos_invoice_rows.csv", mode="w") as csvfile:
+        fieldnames = ["code", "qty", "price"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        # import ipdb; ipdb.set_trace()
+        writer.writeheader()
+        for row in result:
+            writer.writerow(row)
