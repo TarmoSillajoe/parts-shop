@@ -15,10 +15,6 @@ def dict_fetchall(cursor) -> list[dict]:
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
-def processed_invoice(request):
-    return HttpResponse("<h1>Processed your stuff</h1>")
-
-
 def process_csv(uploaded_file, merchant_id: int):
     invoice_data: list = []
     decoded_file = uploaded_file.read().decode("utf-8")

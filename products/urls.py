@@ -9,5 +9,4 @@ urlpatterns = [
     path(
         "upload-invoice/<int:merchantid>/", views.upload_invoice, name="upload-invoice"
     ),
-    path("processed-invoice/", views.processed_invoice, name="processed-invoice"),
 ]
