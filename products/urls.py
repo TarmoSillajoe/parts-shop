@@ -9,4 +9,10 @@ urlpatterns = [
     path(
         "upload-invoice/<int:merchantid>/", views.upload_invoice, name="upload-invoice"
     ),
+    path("find-skus", views.find_skus, name="find-skus"),
+    path(
+        "merchant-search-for-skus/",
+        views.merchant_search_for_skus,
+        name="merchant-search-for-skus",
+    ),
 ]

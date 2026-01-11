@@ -10,6 +10,25 @@ from django.http import HttpResponse
 import csv
 
 
+def find_skus(request):
+    return shortcuts.render(
+        request, template_name="find_skus.html", context={"message": "hello"}
+    )
+
+
+def merchant_search_for_skus(request):
+    name_fragment = request.GET.get("merchants_name")
+    context = {}
+    if name_fragment:
+        result = Merchant.objects.filter(name__istartswith=name_fragment).values()
+        result["merchants_for_skus":result]
+    return shortcuts.render(
+        request,
+        template_name="components/merchant_search_for_skus.html",
+        context=context,
+    )
+
+
 def dict_fetchall(cursor) -> list[dict]:
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
